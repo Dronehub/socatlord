@@ -31,6 +31,10 @@ def run():
     verbose = '-v' in sys.argv
     if verbose:
         del sys.argv[sys.argv.index('-v')]
+    if not os.path.exists('/etc/socatlord'):
+        write_to_file('/etc/socatlord', b'# Put your redirections here')
+        if verbose:
+            print('/etc/socatlord created')
 
     if len(sys.argv) > 1:
         if sys.argv[1] == 'install':
