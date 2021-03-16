@@ -7,6 +7,17 @@ import os
 import sys
 
 
+def kill_all_socats():
+    for socat in os.listdir('/var/run/socatlord'):
+        path = os.path.join('/var/run/socatlord', socat)
+        pid = int(read_in_file(path, 'utf-8'))
+        try:
+            os.kill(pid, 9)
+        except OSError:
+            pass
+        os.unlink(path)
+
+
 def run():
     verbose = '-v' in sys.argv
     if verbose:
@@ -21,7 +32,14 @@ def run():
             os.system('systemctl enable socatlord.service')
             sys.exit(0)
         elif sys.argv[1] == 'run':
-            for proto, host1, port1, host2, port2 in parse_etc_socatlord():
+
+            if not os.exists('/var/run/socatlord'):
+                os.mkdir('/var/run/socatlord')
+
+            kill_all_socats()
+
+            for i, row in enumerate(parse_etc_socatlord()):
+                proto, host1, port1, host2, port2 = row
                 if proto == 'tcp':
                     command = ['socat', 'TCP4-LISTEN:%s,bind=%s' % (port1, host1),
                                'TCP4:%s:%s' % (host2, port2)]
@@ -30,12 +48,13 @@ def run():
                                'UDP4:%s:%s' % (host2, port2)]
                 if verbose:
                     print('Calling %s' % (command, ))
-                subprocess.Popen(command, shell=True)
+                proc = subprocess.Popen(*command, shell=True)
+                write_to_file(os.path.join('/var/run/socatlord', str(i), str(proc.pid), 'utf-8'))
             sys.exit(0)
     print('''Usage:
 
 socatlord install - installs itself as a systemd service
-socatlord run - runs socats
+socatlord run - stop all currently running socats and launch them anew
 ''')
 
 
