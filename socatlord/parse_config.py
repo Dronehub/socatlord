@@ -15,7 +15,7 @@ def parse_etc_socatlord():
                 proto = 'udp'
                 host1 = host1.replace('udp ', '')
             else:
-                if host1.startwith('tcp '):
+                if host1.startswith('tcp '):
                     host1 = host1.replace('tcp ', '')
                 proto = 'tcp'
 
