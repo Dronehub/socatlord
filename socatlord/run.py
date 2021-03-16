@@ -30,6 +30,7 @@ def kill_all_socats():
 
 def run():
     global verbose
+
     verbose = '-v' in sys.argv
     if verbose:
         del sys.argv[sys.argv.index('-v')]
@@ -60,9 +61,12 @@ def run():
                 proto, host1, port1, host2, port2 = row
                 command = ['socat', '%s-listen:%s,bind=%s,reuseaddr,fork' % (proto, port1, host1),
                            '%s:%s:%s' % (proto, host2, port2)]
+                kwargs = {'stdin': subprocess.DEVNULL, 'stdout': subprocess.DEVNULL,
+                        'stderr': subprocess.DEVNULL}
                 if verbose:
                     print('Calling %s' % (command, ))
-                proc = subprocess.Popen(command)
+                    kwargs = {}
+                proc = subprocess.Popen(command, **kwargs)
                 write_to_file(os.path.join('/var/run/socatlord', str(i)), str(proc.pid), 'utf-8')
             sys.exit(0)
     print('''Usage:

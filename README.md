@@ -27,3 +27,13 @@ This may terminate your SSH connection, if you're using a socat to proxy it thou
 You can also call `socatlord stop` to stop all socats.
 
 You can provide an optional argument of `-v` to see what commands are launched
+
+# Changelog
+
+## head
+
+* socat's will be silenced if the mode is not verbose
+
+## v1.0
+
+First formal release
