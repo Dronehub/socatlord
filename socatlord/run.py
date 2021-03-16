@@ -58,12 +58,8 @@ def run():
 
             for i, row in enumerate(parse_etc_socatlord()):
                 proto, host1, port1, host2, port2 = row
-                if proto == 'tcp':
-                    command = ['socat', 'TCP4-LISTEN:%s,bind=%s' % (port1, host1),
-                               'TCP4:%s:%s' % (host2, port2)]
-                else:
-                    command = ['socat', 'UDP4-LISTEN:%s,bind=%s' % (port1, host1),
-                               'UDP4:%s:%s' % (host2, port2)]
+                command = ['socat', '%s-listen:%s,bind=%s,reuseaddr,fork' % (proto, port1, host1),
+                           '%s:%s:%s' % (proto, host2, port2)]
                 if verbose:
                     print('Calling %s' % (command, ))
                 proc = subprocess.Popen(command)
