@@ -50,7 +50,6 @@ def run():
             kill_all_socats()
             sys.exit(0)
         elif sys.argv[1] == 'run':
-            os.setsid()
 
             if not os.path.exists('/var/run/socatlord'):
                 os.mkdir('/var/run/socatlord')
