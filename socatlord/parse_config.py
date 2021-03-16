@@ -8,7 +8,7 @@ def parse_etc_socatlord():
         data = (line for line in data if line)
         data = (line for line in data if not line.startswith('#'))
         data = (line.split('->') for line in data)
-        data = ((host1.strip(), host2.strip() for host1, host2 in data))
+        data = ((host1.strip(), host2.strip()) for host1, host2 in data)
         for host1, host2 in data:
             if host1.startswith('udp '):
                 proto = 'udp'
