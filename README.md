@@ -16,3 +16,12 @@ udp 0.0.0.0:23 -> 192.168.224.20:23
 TCP is the default protocol.
 Socatlord will spawn as many socats as necessary.
 
+# Usage
+
+After you put this file, call `socatlord install`. This will install and enable socatlord to start
+during your startups (only if you're using Systemd).
+
+Later call `socatlord run` to terminate currently running socats and launch your own.
+This may terminate your SSH connection, if you're using a socat to proxy it though.
+
+You can provide an optional argument of `-v` to see what commands are launched

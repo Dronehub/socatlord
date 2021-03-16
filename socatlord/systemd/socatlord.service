@@ -3,7 +3,7 @@ Description=SOCAT manager
 
 [Service]
 Type=oneshot
-ExecStart=socatlord run
+ExecStart=%s run
 StandardOutput=syslog
 
 [Install]

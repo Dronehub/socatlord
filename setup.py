@@ -2,8 +2,8 @@ from setuptools import setup
 
 setup(
     keywords=['socat', 'systemd', 'utility'],
-    version="0.3.10",
-    install_requires=['satella'],
+    version="0.10",
+    install_requires=['satella', 'whereis'],
     package_data={'socatlord': ['systemd/socatlord.service']},
     packages=[
         'socatlord',

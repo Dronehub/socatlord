@@ -1,24 +1,36 @@
 import pkg_resources
 from satella.files import write_to_file, read_in_file
-
+from whereis.cli import where_is_executable
 from .parse_config import parse_etc_socatlord
 import subprocess
 import os
 import sys
 
 
+verbose = False
+
+def where_is_socatlord():
+    return where_is_executable('socatlord')[0]
+
+
 def kill_all_socats():
+    global verbose
     for socat in os.listdir('/var/run/socatlord'):
         path = os.path.join('/var/run/socatlord', socat)
         pid = int(read_in_file(path, 'utf-8'))
         try:
+            if verbose:
+                print('Killing %s' % (pid, ))
             os.kill(pid, 9)
+            if verbose:
+                print('Killed %s OK' % (pid, ))
         except OSError:
-            pass
+            print('Failed to kill %s' % (pid, ))
         os.unlink(path)
 
 
 def run():
+    global verbose
     verbose = '-v' in sys.argv
     if verbose:
         del sys.argv[sys.argv.index('-v')]
@@ -26,8 +38,9 @@ def run():
     if len(sys.argv) > 1:
         if sys.argv[1] == 'install':
             filename = pkg_resources.resource_filename(__name__, 'systemd/socatlord.service')
-            contents = read_in_file(filename)
-            write_to_file('/lib/systemd/system/socatlord.service', contents)
+            contents = read_in_file(filename, 'utf-8')
+            contents = contents % (where_is_socatlord(), )
+            write_to_file('/lib/systemd/system/socatlord.service', contents, 'utf-8')
             os.system('systemctl daemon-reload')
             os.system('systemctl enable socatlord.service')
             sys.exit(0)
