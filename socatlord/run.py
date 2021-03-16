@@ -23,7 +23,7 @@ def run():
                 else:
                     command = 'socat UDP4-LISTEN:%s,bind=%s UDP4:%s:%s' % (port1, host1, host2, port2)
                 subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
-                                 stderr=subprocess.DEVNULL)
+                                 stderr=subprocess.DEVNULL, shell=True)
             sys.exit(0)
     print('''Usage:
 
