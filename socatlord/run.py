@@ -33,7 +33,7 @@ def run():
             sys.exit(0)
         elif sys.argv[1] == 'run':
 
-            if not os.exists('/var/run/socatlord'):
+            if not os.path.exists('/var/run/socatlord'):
                 os.mkdir('/var/run/socatlord')
 
             kill_all_socats()
