@@ -1,6 +1,7 @@
 [Unit]
 Description=SOCAT manager
 KillMode=process
+Wants=network.target
 
 [Service]
 Type=oneshot
