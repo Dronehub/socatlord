@@ -8,6 +8,10 @@ import sys
 
 
 def run():
+    verbose = '-v' in sys.argv
+    if verbose:
+        del sys.argv[sys.argv.index('-v')]
+
     if len(sys.argv) > 1:
         if sys.argv[1] == 'install':
             filename = pkg_resources.resource_filename(__name__, 'systemd/socatlord.service')
@@ -19,10 +23,13 @@ def run():
         elif sys.argv[1] == 'run':
             for proto, host1, port1, host2, port2 in parse_etc_socatlord():
                 if proto == 'tcp':
-                    command = ['socat', 'TCP4-LISTEN:%s,bind=%s' % (port1, host1), 'TCP4:%s:%s' % (host2, port2)]
+                    command = ['socat', 'TCP4-LISTEN:%s,bind=%s' % (port1, host1),
+                               'TCP4:%s:%s' % (host2, port2)]
                 else:
                     command = ['socat', 'UDP4-LISTEN:%s,bind=%s' % (port1, host1),
                                'UDP4:%s:%s' % (host2, port2)]
+                if verbose:
+                    print('Calling %s' % (command, ))
                 subprocess.Popen(command, shell=True)
             sys.exit(0)
     print('''Usage:
