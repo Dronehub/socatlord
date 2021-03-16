@@ -1,9 +1,11 @@
 [Unit]
 Description=SOCAT manager
+KillMode=process
 
 [Service]
 Type=oneshot
 ExecStart=/usr/local/bin/socatlord run
+ExecStop=/usr/local/bin/socatlord stop
 StandardOutput=syslog
 
 [Install]

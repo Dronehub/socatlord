@@ -24,4 +24,6 @@ during your startups (only if you're using Systemd).
 Later call `socatlord run` to terminate currently running socats and launch your own.
 This may terminate your SSH connection, if you're using a socat to proxy it though.
 
+You can also call `socatlord stop` to stop all socats.
+
 You can provide an optional argument of `-v` to see what commands are launched
