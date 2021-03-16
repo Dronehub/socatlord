@@ -13,8 +13,10 @@ def parse_etc_socatlord():
         for host1, host2 in data:
             if host1.startswith('udp '):
                 proto = 'udp'
-                host1 = host1.replace('udp ')
+                host1 = host1.replace('udp ', '')
             else:
+                if host1.startwith('tcp '):
+                    host1 = host1.replace('tcp ', '')
                 proto = 'tcp'
 
             if ':' not in host1:
