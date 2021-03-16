@@ -1,0 +1,10 @@
+[Unit]
+Description=SOCAT manager
+
+[Service]
+Type=oneshot
+ExecStart=socatlord run
+StandardOutput=syslog
+
+[Install]
+WantedBy=multi-user.target
