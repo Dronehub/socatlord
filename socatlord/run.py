@@ -49,7 +49,7 @@ def run():
                 if verbose:
                     print('Calling %s' % (command, ))
                 proc = subprocess.Popen(*command, shell=True)
-                write_to_file(os.path.join('/var/run/socatlord', str(i), str(proc.pid), 'utf-8'))
+                write_to_file(os.path.join('/var/run/socatlord', str(i)), str(proc.pid), 'utf-8')
             sys.exit(0)
     print('''Usage:
 
