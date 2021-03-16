@@ -19,11 +19,11 @@ def run():
         elif sys.argv[1] == 'run':
             for proto, host1, port1, host2, port2 in parse_etc_socatlord():
                 if proto == 'tcp':
-                    command = 'socat TCP4-LISTEN:%s,bind=%s TCP4:%s:%s' % (port1, host1, host2, port2)
+                    command = ['socat', 'TCP4-LISTEN:%s,bind=%s' % (port1, host1), 'TCP4:%s:%s' % (host2, port2)]
                 else:
-                    command = 'socat UDP4-LISTEN:%s,bind=%s UDP4:%s:%s' % (port1, host1, host2, port2)
-                subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
-                                 stderr=subprocess.DEVNULL, shell=True)
+                    command = ['socat', 'UDP4-LISTEN:%s,bind=%s' % (port1, host1),
+                               'UDP4:%s:%s' % (host2, port2)]
+                subprocess.Popen(command, shell=True)
             sys.exit(0)
     print('''Usage:
 
