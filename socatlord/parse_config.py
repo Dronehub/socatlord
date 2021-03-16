@@ -20,8 +20,8 @@ def parse_etc_socatlord():
                 proto = 'tcp'
 
             if ':' not in host1:
-                host1 = '0.0.0.0'
                 port1 = int(host1)
+                host1 = '0.0.0.0'
             else:
                 host1, port1 = host1.split(':')
                 port1 = int(port1)
