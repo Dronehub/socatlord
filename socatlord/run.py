@@ -21,6 +21,8 @@ def kill_all_socats():
             os.kill(pid, 9)
             if verbose:
                 print('Killed %s OK' % (pid, ))
+        except PermissionError:
+            print('Failed to kill %s with EPERM' % (pid, ))
         except OSError:
             print('Failed to kill %s' % (pid, ))
         os.unlink(path)
