@@ -48,7 +48,7 @@ def run():
                                'UDP4:%s:%s' % (host2, port2)]
                 if verbose:
                     print('Calling %s' % (command, ))
-                proc = subprocess.Popen(*command, shell=True)
+                proc = subprocess.Popen(command)
                 write_to_file(os.path.join('/var/run/socatlord', str(i)), str(proc.pid), 'utf-8')
             sys.exit(0)
     print('''Usage:
