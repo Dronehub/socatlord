@@ -34,8 +34,17 @@ def run():
     verbose = '-v' in sys.argv
     if verbose:
         del sys.argv[sys.argv.index('-v')]
+
     if not os.path.exists('/etc/socatlord'):
-        write_to_file('/etc/socatlord', b'# Put your redirections here')
+        write_to_file('/etc/socatlord', b'''# Put your redirections here
+# eg. 
+# 443 -> 192.168.1.1:443
+# will redirect all TCP traffic that comes to this host (0.0.0.0) to specified host and port
+# to redirect UDP traffic just prefix your config with udp, eg.
+# udp 443 -> 192.168.1.1:443
+# You can additionally specify explicit interfaces to listen on eg.
+# 192.168.1.2:443 -> 192.168.1.1:443
+''')
         if verbose:
             print('/etc/socatlord created')
 

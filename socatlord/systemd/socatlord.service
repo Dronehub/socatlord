@@ -1,5 +1,5 @@
 [Unit]
-Description=SOCAT manager
+Description=Multiple port redirection via socat manager
 KillMode=process
 Wants=network.target
 
