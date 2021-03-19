@@ -4,10 +4,10 @@ from .parse_config import parse_etc_socatlord
 import subprocess
 import os
 import sys
+from . import __version__
 
 
 verbose = False
-
 
 
 def kill_all_socats():
@@ -26,6 +26,25 @@ def kill_all_socats():
         except OSError:
             print('Failed to kill %s' % (pid, ))
         os.unlink(path)
+
+
+def print_help():
+    print('''Socatlord v%s by Dronhub Innovations sp. z o. o.
+Manage multiple instances of socat with a single configuration file.
+Configuration file location: /etc/socatlord
+ 
+Usage:
+
+    socatlord install - installs itself as a systemd service
+    socatlord run - stop all currently running socats and launch them anew
+    socatlord stop - stop all currently running socats
+    socatlord help - display this message
+    
+You can also run this as a systemd service, eg. 
+    systemctl start socatlord.service
+    systemctl stop socatlord.service
+    systemctl restart socatlord.service
+''' % (__version__, ))
 
 
 def run():
@@ -55,14 +74,13 @@ def run():
             write_to_file('/lib/systemd/system/socatlord.service', contents, 'utf-8')
             os.system('systemctl daemon-reload')
             os.system('systemctl enable socatlord.service')
-            sys.exit(0)
         elif sys.argv[1] == 'stop':
             kill_all_socats()
-            sys.exit(0)
         elif sys.argv[1] == 'run':
 
             if not os.path.exists('/var/run/socatlord'):
                 os.mkdir('/var/run/socatlord')
+            os.chmod(0o600, '/var/run/socatlord')
 
             kill_all_socats()
 
@@ -77,11 +95,14 @@ def run():
                     kwargs = {}
                 proc = subprocess.Popen(command, **kwargs)
                 write_to_file(os.path.join('/var/run/socatlord', str(i)), str(proc.pid), 'utf-8')
-            sys.exit(0)
-    print('''Usage:
-
-socatlord install - installs itself as a systemd service
-socatlord run - stop all currently running socats and launch them anew
-''')
+        elif sys.argv[1] == 'help':
+            print_help()
+        else:
+            print('''Unknown command''')
+            print_help()
+            sys.exit(1)
+    else:
+        print_help()
+    sys.exit(0)
 
 

@@ -36,9 +36,9 @@ You can provide an optional argument of `-v` to see what commands are launched
 
 # Changelog
 
-## head
+## v1.2
 
-* _TBA_ver
+* socatlord banner fixed
 
 ## v1.1
 
