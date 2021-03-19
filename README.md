@@ -39,6 +39,10 @@ socatlord must be run as root. A check will be made for this.
 
 # Changelog
 
+## v1.3
+
+* _TBA_
+
 ## v1.2
 
 * socatlord uses argparse
