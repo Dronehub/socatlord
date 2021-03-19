@@ -32,13 +32,17 @@ and restart in one go.
 
 You can also call `socatlord stop` to stop all socats.
 
-You can provide an optional argument of `-v` to see what commands are launched
+
+You can provide an optional argument of `-v` to see what commands are launched.
+You can provide an optional explicit path to config file, if `/etc/socatlord` is meant not to be used.
+socatlord must be run as root. A check will be made for this.
 
 # Changelog
 
 ## v1.2
 
-* socatlord banner fixed
+* socatlord uses argparse
+* socatlord will check if it's ran as root
 
 ## v1.1
 

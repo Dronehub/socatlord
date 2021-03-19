@@ -1,108 +1,28 @@
-import pkg_resources
-from satella.files import write_to_file, read_in_file
-from .parse_config import parse_etc_socatlord
-import subprocess
-import os
-import sys
-from . import __version__
+import argparse
 
-
-verbose = False
-
-
-def kill_all_socats():
-    global verbose
-    for socat in os.listdir('/var/run/socatlord'):
-        path = os.path.join('/var/run/socatlord', socat)
-        pid = int(read_in_file(path, 'utf-8'))
-        try:
-            if verbose:
-                print('Killing %s' % (pid, ))
-            os.kill(pid, 9)
-            if verbose:
-                print('Killed %s OK' % (pid, ))
-        except PermissionError:
-            print('Failed to kill %s with EPERM' % (pid, ))
-        except OSError:
-            print('Failed to kill %s' % (pid, ))
-        os.unlink(path)
-
-
-def print_help():
-    print('''Socatlord v%s by Dronhub Innovations sp. z o. o.
-Manage multiple instances of socat with a single configuration file.
-Configuration file location: /etc/socatlord
- 
-Usage:
-
-    socatlord install - installs itself as a systemd service
-    socatlord run - stop all currently running socats and launch them anew
-    socatlord stop - stop all currently running socats
-    socatlord help - display this message
-    
-You can also run this as a systemd service, eg. 
-    systemctl start socatlord.service
-    systemctl stop socatlord.service
-    systemctl restart socatlord.service
-''' % (__version__, ))
+from socatlord.operations import start_all_socats, do_precheck, kill_all_socats, install_socatlord
 
 
 def run():
-    global verbose
+    parser = argparse.ArgumentParser(prog='socatlord', usage='''Call with a single argument
+    *install* will install and enable socatlord to work as a systemd service (socatlord.service)
+    *run* will shut down all socats that it previously spawned (free-range socats won't be touched) and restart them
+    *stop* will terminate socats''')
+    parser.add_argument('-v', action='store_true', help='Display what commands are ran and pipe socats to stdout')
+    parser.add_argument('--config', default='/etc/socatlord', help='Location of config file (default is /etc/socatlord)')
+    parser.add_argument('operation', choices=['install', 'run', 'stop'], help='Operation to do')
 
-    verbose = '-v' in sys.argv
-    if verbose:
-        del sys.argv[sys.argv.index('-v')]
+    args = parser.parse_args()
 
-    if not os.path.exists('/etc/socatlord'):
-        write_to_file('/etc/socatlord', b'''# Put your redirections here
-# eg. 
-# 443 -> 192.168.1.1:443
-# will redirect all TCP traffic that comes to this host (0.0.0.0) to specified host and port
-# to redirect UDP traffic just prefix your config with udp, eg.
-# udp 443 -> 192.168.1.1:443
-# You can additionally specify explicit interfaces to listen on eg.
-# 192.168.1.2:443 -> 192.168.1.1:443
-''')
-        if verbose:
-            print('/etc/socatlord created')
+    do_precheck(args.config, args.v)
 
-    if len(sys.argv) > 1:
-        if sys.argv[1] == 'install':
-            filename = pkg_resources.resource_filename(__name__, 'systemd/socatlord.service')
-            contents = read_in_file(filename, 'utf-8')
-            write_to_file('/lib/systemd/system/socatlord.service', contents, 'utf-8')
-            os.system('systemctl daemon-reload')
-            os.system('systemctl enable socatlord.service')
-        elif sys.argv[1] == 'stop':
-            kill_all_socats()
-        elif sys.argv[1] == 'run':
-
-            if not os.path.exists('/var/run/socatlord'):
-                os.mkdir('/var/run/socatlord')
-            os.chmod(0o600, '/var/run/socatlord')
-
-            kill_all_socats()
-
-            for i, row in enumerate(parse_etc_socatlord()):
-                proto, host1, port1, host2, port2 = row
-                command = ['socat', '%s-listen:%s,bind=%s,reuseaddr,fork' % (proto, port1, host1),
-                           '%s:%s:%s' % (proto, host2, port2)]
-                kwargs = {'stdin': subprocess.DEVNULL, 'stdout': subprocess.DEVNULL,
-                        'stderr': subprocess.DEVNULL}
-                if verbose:
-                    print('Calling %s' % (command, ))
-                    kwargs = {}
-                proc = subprocess.Popen(command, **kwargs)
-                write_to_file(os.path.join('/var/run/socatlord', str(i)), str(proc.pid), 'utf-8')
-        elif sys.argv[1] == 'help':
-            print_help()
-        else:
-            print('''Unknown command''')
-            print_help()
-            sys.exit(1)
+    if args.operation == 'install':
+        install_socatlord(args.v)
     else:
-        print_help()
-    sys.exit(0)
+        kill_all_socats(args.v)
+        if args.operation == 'run':
+            start_all_socats(args.config, args.v)
 
 
+if __name__ == '__main__':
+    run()

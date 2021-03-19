@@ -1,9 +1,9 @@
 from satella.files import read_in_file
 import sys
 
-def parse_etc_socatlord():
+def parse_etc_socatlord(filename: str):
     try:
-        data = read_in_file('/etc/socatlord', 'utf-8').replace('\r\n', '\n').split('\n')
+        data = read_in_file(filename, 'utf-8').replace('\r\n', '\n').split('\n')
         data = (line.strip() for line in data)
         data = (line for line in data if line)
         data = (line for line in data if not line.startswith('#'))
