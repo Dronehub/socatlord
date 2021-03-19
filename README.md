@@ -40,6 +40,10 @@ socatlord must be run as root. A check will be made for this.
 
 # Changelog
 
+## head
+
+* _TBA_
+
 ## v1.3
 
 * socatlord will check if socats are alive after started
