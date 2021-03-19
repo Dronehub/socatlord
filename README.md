@@ -20,7 +20,8 @@ Socatlord will spawn as many socats as necessary.
 
 After you put this file, call `socatlord install`. This will install and enable socatlord to start
 during your startups (only if you're using Systemd).
-`/etc/socatlord` will be created about then.
+`/etc/socatlord` will be created about then, if it does not already exists. If you haven't done so,
+now it would be a good time to fill it up.
 
 Note that installation itself will not start socatlord! After installation put your configuration in
 `/etc/socatlord`.
@@ -41,7 +42,7 @@ socatlord must be run as root. A check will be made for this.
 
 ## v1.3
 
-* _TBA_
+* socatlord will check if socats are alive after started
 
 ## v1.2
 

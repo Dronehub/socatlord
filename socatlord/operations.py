@@ -1,8 +1,12 @@
 import os
+import shutil
 import subprocess
 import sys
+import time
 
 import pkg_resources
+from satella.coding import silence_excs
+from satella.coding.sequences import smart_enumerate
 from satella.files import write_to_file, read_in_file
 
 from socatlord.parse_config import parse_etc_socatlord
@@ -23,8 +27,9 @@ def install_socatlord(verbose: bool = False) -> None:
 
 
 def start_all_socats(config_file: str, verbose: bool = False) -> None:
-    for i, row in enumerate(parse_etc_socatlord(config_file)):
-        proto, host1, port1, host2, port2 = row
+    processes_and_args = []
+
+    for i, proto, host1, port1, host2, port2 in smart_enumerate(parse_etc_socatlord(config_file)):
         command = ['socat', '%s-listen:%s,bind=%s,reuseaddr,fork' % (proto, port1, host1),
                    '%s:%s:%s' % (proto, host2, port2)]
         kwargs = {'stdin': subprocess.DEVNULL, 'stdout': subprocess.DEVNULL,
@@ -33,7 +38,24 @@ def start_all_socats(config_file: str, verbose: bool = False) -> None:
             print('Calling %s' % (command,))
             kwargs = {}
         proc = subprocess.Popen(command, **kwargs)
+        processes_and_args.append((proc, command))
         write_to_file(os.path.join('/var/run/socatlord', str(i)), str(proc.pid), 'utf-8')
+
+    if verbose:
+        print('All socats launched, checking for liveness...')
+    time.sleep(1)
+
+    for i, proc, cmd in smart_enumerate(processes_and_args):
+        with silence_excs(subprocess.TimeoutExpired):
+            proc.wait(timeout=0.0)
+            rc = proc.returncode
+            print('socat no %s (PID %s) died (RC=%s), command was "%s", aborting' % (i+1, proc.pid,
+                                                                                     rc, cmd))
+            os.unlink(os.path.join('/var/run/socatlord', str(i)))
+            sys.exit(1)
+
+    if verbose:
+        print('All socats alive, finishing successfully')
 
 
 def do_precheck(config_file: str, verbose: bool = False):
