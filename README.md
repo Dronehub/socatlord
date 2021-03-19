@@ -1,4 +1,7 @@
 # socatlord
+[![PyPI](https://img.shields.io/pypi/pyversions/socatlord.svg)](https://pypi.python.org/pypi/socatlord)
+[![PyPI version](https://badge.fury.io/py/socatlord.svg)](https://badge.fury.io/py/socatlord)
+[![PyPI](https://img.shields.io/pypi/implementation/socatlord.svg)](https://pypi.python.org/pypi/socatlord)
 
 socatlord is a tool to manage multiple socats
 
