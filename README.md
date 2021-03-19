@@ -31,6 +31,10 @@ You can provide an optional argument of `-v` to see what commands are launched
 
 # Changelog
 
+## head
+
+* _TBA_ver
+
 ## v1.1
 
 * socat's will be silenced if the mode is not verbose
