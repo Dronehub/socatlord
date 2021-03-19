@@ -22,8 +22,13 @@ After you put this file, call `socatlord install`. This will install and enable 
 during your startups (only if you're using Systemd).
 `/etc/socatlord` will be created about then.
 
-Later call `socatlord run` to terminate currently running socats and launch your own.
-This may terminate your SSH connection, if you're using a socat to proxy it though.
+Note that installation itself will not start socatlord! After installation put your configuration in
+`/etc/socatlord`.
+
+Later call either `socatlord run` 
+or `systemctl start socatlord.service` to terminate currently running socats and launch your own.
+This may terminate your SSH connection, if you're using a socat to proxy it though, however it will destroy them
+and restart in one go.
 
 You can also call `socatlord stop` to stop all socats.
 
