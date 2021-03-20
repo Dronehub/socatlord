@@ -1,5 +1,7 @@
 import argparse
 
+from satella.files import read_in_file
+
 from socatlord.operations import start_all_socats, do_precheck, kill_all_socats, install_socatlord
 
 
@@ -7,10 +9,12 @@ def run():
     parser = argparse.ArgumentParser(prog='socatlord', usage='''Call with a single argument
     *install* will install and enable socatlord to work as a systemd service (socatlord.service)
     *run* will shut down all socats that it previously spawned (free-range socats won't be touched) and restart them
-    *stop* will terminate socats''')
+    *stop* will terminate socats
+    *view* will display config file''')
     parser.add_argument('-v', action='store_true', help='Display what commands are ran and pipe socats to stdout')
     parser.add_argument('--config', default='/etc/socatlord', help='Location of config file (default is /etc/socatlord)')
-    parser.add_argument('operation', choices=['install', 'run', 'stop'], help='Operation to do')
+    parser.add_argument('operation', choices=['install', 'run', 'stop', 'view'],
+                        help='Operation to do')
 
     args = parser.parse_args()
 
@@ -18,6 +22,8 @@ def run():
 
     if args.operation == 'install':
         install_socatlord(args.v)
+    elif args.operation == 'view':
+        print(read_in_file(args.config, 'utf-8'))
     else:
         kill_all_socats(args.v)
         if args.operation == 'run':

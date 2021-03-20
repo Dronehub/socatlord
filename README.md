@@ -45,7 +45,7 @@ socatlord must be run as root. A check will be made for this.
 
 ## head
 
-* _TBA_
+* added **view** and **add**
 
 ## v1.3
 
