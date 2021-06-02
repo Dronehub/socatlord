@@ -19,6 +19,20 @@ udp 0.0.0.0:23 -> 192.168.224.20:23
 TCP is the default protocol.
 Socatlord will spawn as many socats as necessary.
 
+# Installation
+
+```
+pip install socatlord
+```
+
+Or
+
+```
+git clone https://github.com/Dronehub/socatlord.git
+cd socatlord
+python setup.py install
+```
+
 # Usage
 
 After you put this file, call `socatlord install`. This will install and enable socatlord to start
